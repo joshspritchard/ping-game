@@ -1,0 +1,12 @@
+[
+  {
+    "id": "001",
+    "problem": "Sarah's PC can't connect to the wireless network.",
+    "location": "West Block, Room 3",
+    "device": "WB-R3-PC1",
+    "reportedBy": "Sarah, Finance",
+    "fault": { "wifi.ssid": "GUEST-WIFI" },
+    "fixedWhen": { "canReach": "fileserver" },
+    "hint": "Guest Wi-Fi gets the internet but not company servers."
+  }
+]

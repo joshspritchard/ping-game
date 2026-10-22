@@ -15,15 +15,35 @@
     <span id="location-text">IT Office</span>
   </header>
 
-  <!-- The game world gets drawn on this canvas.
-       640 x 480 pixels = 20 x 15 tiles of 32 pixels each. -->
-  <canvas id="game" width="640" height="480"></canvas>
+  <!-- The game area. The canvas and the pop-ups sit on top of each other. -->
+  <div id="game-area">
+    <!-- The game world gets drawn on this canvas.
+         640 x 480 pixels = 20 x 15 tiles of 32 pixels each. -->
+    <canvas id="game" width="640" height="480"></canvas>
+
+    <!-- The job sheet: pops up when you collect a job from the ticket printer.
+         "hidden" means it starts invisible; tickets.js fills it in and shows it. -->
+    <div id="job-sheet" class="paper" hidden>
+      <div class="paper-header">
+        <span>IT HELPDESK · JOB SHEET</span>
+        <span id="sheet-number">#000</span>
+      </div>
+      <p id="sheet-problem" class="sheet-problem"></p>
+      <table class="sheet-details">
+        <tr><th>Location</th><td id="sheet-location"></td></tr>
+        <tr><th>Device</th><td id="sheet-device"></td></tr>
+        <tr><th>Reported by</th><td id="sheet-reported"></td></tr>
+      </table>
+      <button id="sheet-close">Take the job (E)</button>
+    </div>
+  </div>
 
   <!-- Load the game code last, so the canvas above already exists when it runs.
        main.js comes last because it uses functions from the other files. -->
   <script src="js/input.js"></script>
   <script src="js/world.js"></script>
   <script src="js/player.js"></script>
+  <script src="js/tickets.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

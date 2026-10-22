@@ -37,10 +37,89 @@ body {
   color: #a9a69e;
 }
 
-/* The canvas keeps its 640x480 drawing size, but shrinks on small screens */
-#game {
+/* The game area holds the canvas, and pop-ups placed on top of it.
+   "position: relative" lets the pop-ups be positioned inside it. */
+#game-area {
+  position: relative;
   width: 640px;
   max-width: 100%;
+}
+
+/* The canvas keeps its 640x480 drawing size, but shrinks on small screens */
+#game {
+  display: block;
+  width: 100%;
   background: #000;
   border-radius: 0 0 8px 8px;
+}
+
+/* A sheet of paper, floating in the middle of the game area */
+.paper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 380px;
+  max-width: 90%;
+  box-sizing: border-box;
+  padding: 18px 20px;
+  background: #fbfaf5;
+  color: #1f1e1c;
+  border-radius: 4px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+  font-family: ui-monospace, Consolas, monospace;
+}
+
+/* "hidden" must win over "display" rules, so the sheet really disappears */
+.paper[hidden] {
+  display: none;
+}
+
+.paper-header {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  border-bottom: 2px dashed #b8b4a8;
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+}
+
+.sheet-problem {
+  font-size: 1.05rem;
+  margin: 0 0 12px;
+}
+
+.sheet-details {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 16px;
+}
+
+.sheet-details th {
+  text-align: left;
+  color: #5f5d58;
+  font-weight: normal;
+  padding: 3px 10px 3px 0;
+  width: 1%;
+  white-space: nowrap;
+}
+
+.sheet-details td {
+  font-weight: bold;
+  padding: 3px 0;
+}
+
+.paper button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  background: #2a6fd6;
+  color: #fff;
+  font: bold 1rem system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.paper button:hover {
+  background: #1f5bb5;
 }

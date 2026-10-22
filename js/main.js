@@ -60,21 +60,43 @@ function gameLoop(time) {
   const dt = Math.min((time - lastTime) / 1000, 0.1);
   lastTime = time;
 
-  updatePlayer(currentMap, dt);   // 1. update: move the player...
-  checkDoors();                   //    ...and go through a door if on one
+  // While the job sheet is open, the game waits: the player can't move,
+  // and E, Enter or Esc closes the sheet.
+  let nearbyDevice = null;
+  let prompt = null;
+  if (isJobSheetOpen()) {
+    if (wasPressed("interact") || wasPressed("close")) hideJobSheet();
+  } else {
+    updatePlayer(currentMap, dt);   // 1. update: move the player...
+    checkDoors();                   //    ...and go through a door if on one
 
-  // What device is the player next to (if any)? Pressing E inspects it.
-  // For now that just prints it in the console (F12); the inspect panel
-  // comes in Issue 9.
-  const nearby = findNearbyDevice(devices, currentMapId);
-  if (wasPressed("interact") && nearby) {
-    console.log("Inspecting " + nearby.name, nearby);
+    // What is the player next to? A device, or the ticket printer?
+    nearbyDevice = findNearbyDevice(devices, currentMapId);
+    const nearbyPrinter = findNearbyPrinter(currentMap);
+    const pressedE = wasPressed("interact");
+
+    if (nearbyDevice) {
+      const connects = nearbyDevice.connection === "wifi" ? "Wi-Fi" : "Wired";
+      prompt = {
+        x: nearbyDevice.x, y: nearbyDevice.y,
+        lines: ["E · Inspect " + nearbyDevice.name, nearbyDevice.owner + " · " + connects],
+      };
+      // For now inspecting just prints the device in the console (F12);
+      // the inspect panel comes in Issue 9.
+      if (pressedE) console.log("Inspecting " + nearbyDevice.name, nearbyDevice);
+    } else if (nearbyPrinter) {
+      prompt = {
+        x: nearbyPrinter.x, y: nearbyPrinter.y,
+        lines: [currentTicket ? "E · Read job sheet #" + currentTicket.id : "E · Collect a job"],
+      };
+      if (pressedE) usePrinter(devices);
+    }
   }
 
   drawMap(ctx, currentMap);       // 2. draw: the map first...
-  drawDevices(ctx, currentMap, currentMapId, devices, nearby);  // ...then devices...
+  drawDevices(ctx, currentMap, currentMapId, devices, nearbyDevice);  // ...then devices...
   drawPlayer(ctx, currentMap);    //    ...then the player...
-  drawPrompt(ctx, currentMap, nearby);  // ...then the "Press E" prompt on top
+  drawPrompt(ctx, currentMap, prompt);  // ...then the "Press E" prompt on top
 
   // Ask the browser to call gameLoop again before the next screen refresh.
   requestAnimationFrame(gameLoop);
@@ -95,11 +117,13 @@ function showError(...lines) {
 }
 
 async function start() {
-  // Wait for maps.json and devices.json to load (both functions are in world.js).
+  // Wait for the data files to load (loadMaps and loadDevices are in
+  // world.js, loadTickets is in tickets.js).
   // "try" means: if anything in here fails, jump to "catch" instead of stopping.
   try {
     maps = await loadMaps();
     devices = await loadDevices();
+    tickets = await loadTickets();
   } catch (error) {
     console.error(error);
     showError(

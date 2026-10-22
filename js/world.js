@@ -184,19 +184,18 @@ function drawDeviceLabel(ctx, device, px, py) {
   drawTag(ctx, [device.name, connects], px + TILE / 2, py + TILE + 3);
 }
 
-// Show which device you're next to: a yellow outline around it, and
-// "E · Inspect <name>" along the bottom of the screen.
-function drawPrompt(ctx, map, device) {
-  if (!device) return;  // not next to anything
+// Show what you can use: a yellow outline around its tile, and a prompt
+// along the bottom of the screen. target is { x, y, lines }, where x and y
+// are the tile and lines is the text, e.g. ["E · Inspect Sarah's PC"].
+function drawPrompt(ctx, map, target) {
+  if (!target) return;  // not next to anything
 
   const offset = mapOffset(ctx.canvas, map);
   ctx.strokeStyle = "#ffd23f";
   ctx.lineWidth = 2;
-  ctx.strokeRect(offset.x + device.x * TILE + 1, offset.y + device.y * TILE + 1, TILE - 2, TILE - 2);
+  ctx.strokeRect(offset.x + target.x * TILE + 1, offset.y + target.y * TILE + 1, TILE - 2, TILE - 2);
 
-  const connects = device.connection === "wifi" ? "Wi-Fi" : "Wired";
-  drawTag(ctx, ["E · Inspect " + device.name, device.owner + " · " + connects],
-          ctx.canvas.width / 2, ctx.canvas.height - 44);
+  drawTag(ctx, target.lines, ctx.canvas.width / 2, ctx.canvas.height - 44);
 }
 
 // Fonts and colours for labels: line 1 is the main text, line 2 is smaller.

@@ -16,6 +16,7 @@ const KEY_BINDINGS = {
   left:     ["ArrowLeft", "KeyA"],
   right:    ["ArrowRight", "KeyD"],
   interact: ["KeyE"],
+  close:    ["Escape", "Enter"],
 };
 
 window.addEventListener("keydown", (event) => {

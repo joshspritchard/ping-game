@@ -11,14 +11,20 @@ const ctx = canvas.getContext("2d");
 const START_MAP = "it-office";
 const START_TILE = { x: 9, y: 12 };
 
-// Every map from maps.json, and the one the player is on right now.
+// Every map from maps.json, and the one the player is on right now
+// (both the map itself and its name, e.g. "west-room3").
 let maps = {};
 let currentMap = null;
+let currentMapId = null;
+
+// Every device from devices.json.
+let devices = [];
 
 // Move the player to a map, standing on a given tile,
 // and show the map's name in the job bar.
 function goToMap(mapId, tileX, tileY) {
   currentMap = maps[mapId];
+  currentMapId = mapId;
   placePlayer(tileX, tileY);
   document.getElementById("location-text").textContent = currentMap.name;
 }
@@ -57,6 +63,7 @@ function gameLoop(time) {
   updatePlayer(currentMap, dt);   // 1. update: move the player...
   checkDoors();                   //    ...and go through a door if on one
   drawMap(ctx, currentMap);       // 2. draw: the map first...
+  drawDevices(ctx, currentMap, currentMapId, devices);  // ...then devices...
   drawPlayer(ctx, currentMap);    //    ...then the player on top
 
   // Ask the browser to call gameLoop again before the next screen refresh.
@@ -78,16 +85,18 @@ function showError(...lines) {
 }
 
 async function start() {
-  // Wait for maps.json to load (loadMaps is in world.js).
+  // Wait for maps.json and devices.json to load (both functions are in world.js).
   // "try" means: if anything in here fails, jump to "catch" instead of stopping.
   try {
     maps = await loadMaps();
+    devices = await loadDevices();
   } catch (error) {
     console.error(error);
     showError(
-      "Couldn't load data/maps.json.",
+      "Couldn't load the game's data files (data/*.json).",
       "Open the game from a web server (http://...),",
-      "not by double-clicking index.html."
+      "not by double-clicking index.html.",
+      "If it is on a server, check the console (F12) for a typo in the JSON."
     );
     return;
   }

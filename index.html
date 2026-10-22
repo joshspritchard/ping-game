@@ -1,31 +1,25 @@
 <!doctype html>
 <html lang="en-GB">
 <head>
-  <!-- Tells the browser how to read the text (so symbols like "!" and "—" show correctly) -->
   <meta charset="utf-8">
-  <!-- Makes the page fit phone screens instead of looking zoomed out -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- The text shown on the browser tab -->
   <title>Ping!</title>
-  <style>
-    /* Centre everything on a dark background */
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background: #1a1918;
-      color: #ecebe7;
-      font-family: system-ui, sans-serif;
-    }
-    h1 { font-size: 3rem; margin: 0; }
-    p  { color: #a9a69e; }
-  </style>
+  <!-- All the colours and layout live in style.css -->
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Ping! coming soon</h1>
-  <p>A top-down game about fixing an office network.</p>
+  <!-- The job bar: always on screen, shows the current job and where you are -->
+  <header id="job-bar">
+    <span class="logo">Ping!</span>
+    <span id="job-text">No job yet: visit the ticket printer</span>
+    <span id="location-text">IT Office</span>
+  </header>
+
+  <!-- The game world gets drawn on this canvas.
+       640 x 480 pixels = 20 x 15 tiles of 32 pixels each. -->
+  <canvas id="game" width="640" height="480"></canvas>
+
+  <!-- Load the game code last, so the canvas above already exists when it runs -->
+  <script src="js/main.js"></script>
 </body>
 </html>

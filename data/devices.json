@@ -1,0 +1,51 @@
+[
+  {
+    "id": "WB-R3-PC1", "type": "pc", "name": "Sarah's PC", "owner": "Sarah, Finance",
+    "map": "west-room3", "x": 9, "y": 3,
+    "connection": "wifi",
+    "wifi": { "on": true, "ssid": "CORP-WIFI", "password": "Ping2026!" },
+    "ip": "dhcp", "mask": "255.255.255.0", "gateway": "192.168.1.1", "dns": "192.168.1.5"
+  },
+  {
+    "id": "WB-R3-PC2", "type": "pc", "name": "Tom's PC", "owner": "Tom, Finance",
+    "map": "west-room3", "x": 3, "y": 3,
+    "connection": "wired",
+    "cable": { "plugged": true, "switchPort": 3 },
+    "ip": "dhcp", "mask": "255.255.255.0", "gateway": "192.168.1.1", "dns": "192.168.1.5"
+  },
+  {
+    "id": "WB-R3-LT1", "type": "laptop", "name": "Priya's laptop", "owner": "Priya, Finance",
+    "map": "west-room3", "x": 15, "y": 3,
+    "connection": "wifi",
+    "wifi": { "on": true, "ssid": "CORP-WIFI", "password": "Ping2026!" },
+    "ip": "dhcp", "mask": "255.255.255.0", "gateway": "192.168.1.1", "dns": "192.168.1.5"
+  },
+  {
+    "id": "WB-R3-PC3", "type": "pc", "name": "Dan's PC", "owner": "Dan, Finance",
+    "map": "west-room3", "x": 3, "y": 8,
+    "connection": "wired",
+    "cable": { "plugged": true, "switchPort": 4 },
+    "ip": "dhcp", "mask": "255.255.255.0", "gateway": "192.168.1.1", "dns": "192.168.1.5"
+  },
+  {
+    "id": "WB-R3-LT2", "type": "laptop", "name": "Aisha's laptop", "owner": "Aisha, Finance",
+    "map": "west-room3", "x": 9, "y": 8,
+    "connection": "wifi",
+    "wifi": { "on": true, "ssid": "CORP-WIFI", "password": "Ping2026!" },
+    "ip": "dhcp", "mask": "255.255.255.0", "gateway": "192.168.1.1", "dns": "192.168.1.5"
+  },
+  {
+    "id": "WB-R3-PC4", "type": "pc", "name": "Mike's PC", "owner": "Mike, Finance",
+    "map": "west-room3", "x": 15, "y": 8,
+    "connection": "wired",
+    "cable": { "plugged": true, "switchPort": 5 },
+    "ip": "192.168.1.24", "mask": "255.255.255.0", "gateway": "192.168.1.1", "dns": "192.168.1.5"
+  },
+  {
+    "id": "WB-R3-AP1", "type": "ap", "name": "Access point", "owner": "IT",
+    "map": "west-room3", "x": 9, "y": 0,
+    "connection": "wired",
+    "on": true,
+    "ssids": ["CORP-WIFI", "GUEST-WIFI"]
+  }
+]

@@ -1,0 +1,46 @@
+/* Dark page, game in the middle */
+body {
+  margin: 0;
+  background: #1a1918;
+  color: #ecebe7;
+  font-family: system-ui, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* The job bar across the top */
+#job-bar {
+  width: 640px;
+  max-width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding: 10px 14px;
+  margin-top: 16px;
+  background: #262523;
+  border-radius: 8px 8px 0 0;
+}
+
+.logo {
+  font-weight: bold;
+  color: #6aa3f5;
+}
+
+/* The job text takes up the spare space, pushing the location to the right */
+#job-text {
+  flex: 1;
+}
+
+#location-text {
+  color: #a9a69e;
+}
+
+/* The canvas keeps its 640x480 drawing size, but shrinks on small screens */
+#game {
+  width: 640px;
+  max-width: 100%;
+  background: #000;
+  border-radius: 0 0 8px 8px;
+}

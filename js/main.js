@@ -1,36 +1,54 @@
 // main.js: the starting point of the game.
-// For Issue #1 it just finds the canvas and draws a placeholder,
-// so we know the page and canvas are wired up correctly.
+// It loads the maps, then draws the map the player starts on.
 
 // Find the canvas on the page, and get its "2d context":
 // the object we use to draw shapes and text on it.
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
-// Every tile in the world will be 32 x 32 pixels.
-const TILE = 32;
+// The player starts in the IT Office.
+const START_MAP = "it-office";
 
-// Fill the whole canvas with a dark grey background.
-ctx.fillStyle = "#2b2a28";
-ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-// Draw faint grid lines so we can see the 32px tiles.
-ctx.strokeStyle = "#3a3936";
-for (let x = 0; x <= canvas.width; x += TILE) {
-  ctx.beginPath();
-  ctx.moveTo(x, 0);
-  ctx.lineTo(x, canvas.height);
-  ctx.stroke();
-}
-for (let y = 0; y <= canvas.height; y += TILE) {
-  ctx.beginPath();
-  ctx.moveTo(0, y);
-  ctx.lineTo(canvas.width, y);
-  ctx.stroke();
+// If something goes wrong while starting, write the problem on the canvas
+// instead of leaving a black screen.
+// Pass in one or more lines of text; each is drawn on its own line.
+function showError(...lines) {
+  ctx.fillStyle = "#000";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "#ff8080";
+  ctx.font = "16px system-ui, sans-serif";
+  ctx.textAlign = "center";
+  lines.forEach((line, i) => {
+    ctx.fillText(line, canvas.width / 2, canvas.height / 2 + i * 24);
+  });
 }
 
-// Write a message in the middle of the canvas.
-ctx.fillStyle = "#ecebe7";
-ctx.font = "20px system-ui, sans-serif";
-ctx.textAlign = "center";
-ctx.fillText("The map will be drawn here (Issue #2)", canvas.width / 2, canvas.height / 2);
+async function start() {
+  // Wait for maps.json to load (loadMaps is in world.js).
+  // "try" means: if anything in here fails, jump to "catch" instead of stopping.
+  let maps;
+  try {
+    maps = await loadMaps();
+  } catch (error) {
+    console.error(error);
+    showError(
+      "Couldn't load data/maps.json.",
+      "Open the game from a web server (http://...),",
+      "not by double-clicking index.html."
+    );
+    return;
+  }
+
+  const map = maps[START_MAP];
+  if (!map) {
+    showError('No map called "' + START_MAP + '" in maps.json');
+    return;
+  }
+
+  // Show the map's name in the job bar.
+  document.getElementById("location-text").textContent = map.name;
+
+  drawMap(ctx, map);
+}
+
+start();

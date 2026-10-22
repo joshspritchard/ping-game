@@ -20,8 +20,10 @@
   <canvas id="game" width="640" height="480"></canvas>
 
   <!-- Load the game code last, so the canvas above already exists when it runs.
-       world.js comes first because main.js uses its functions. -->
+       main.js comes last because it uses functions from the other files. -->
+  <script src="js/input.js"></script>
   <script src="js/world.js"></script>
+  <script src="js/player.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

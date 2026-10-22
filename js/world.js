@@ -38,6 +38,24 @@ function mapOffset(canvas, map) {
   };
 }
 
+// Tiles you can't walk through.
+const SOLID_TILES = ["#", "P"];
+
+// Can the player stand on this point? x and y are in pixels, measured
+// from the map's top-left corner (not the canvas's).
+function isWalkable(map, x, y) {
+  // Which tile is this pixel in? Divide by the tile size and round down.
+  const tileX = Math.floor(x / TILE);
+  const tileY = Math.floor(y / TILE);
+
+  // Anything off the edge of the map counts as a wall.
+  if (tileY < 0 || tileY >= map.grid.length) return false;
+  const row = map.grid[tileY];
+  if (tileX < 0 || tileX >= row.length) return false;
+
+  return !SOLID_TILES.includes(row[tileX]);
+}
+
 // Draw one whole map.
 function drawMap(ctx, map) {
   // Clear the canvas to black first (the area around small maps).

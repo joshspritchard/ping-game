@@ -19,7 +19,78 @@
       "#########D##########"
     ],
     "doors": [
-      { "x": 9, "y": 14, "to": "campus", "spawnX": 5, "spawnY": 5 }
+      { "x": 9, "y": 14, "to": "campus", "spawnX": 9, "spawnY": 3 }
+    ]
+  },
+
+  "campus": {
+    "name": "Campus",
+    "grid": [
+      "gggggBBBBBBBBBBggggg",
+      "gggggBBBBBBBBBBggggg",
+      "gggggBBBBDBBBBBggggg",
+      "ggggggggg.gggggggggg",
+      "BBBBggggg.ggggggBBBB",
+      "BBBBggggg.ggggggBBBB",
+      "BBBD............BBBB",
+      "BBBBggggg.ggggggBBBB",
+      "BBBBggggg.ggggggBBBB",
+      "ggggggggg.gggggggggg",
+      "gcccccccc.cccccccccg",
+      "gcccccccc.cccccccccg",
+      "gcccccccc.cccccccccg",
+      "gcccccccc.cccccccccg",
+      "gggggggggggggggggggg"
+    ],
+    "labels": [
+      { "x": 9.5, "y": 0.6, "text": "Main Building" },
+      { "x": 1.5, "y": 4.6, "text": "West Block" },
+      { "x": 17.5, "y": 4.6, "text": "East Block" },
+      { "x": 4.5, "y": 11.5, "text": "Car park" }
+    ],
+    "doors": [
+      { "x": 9, "y": 2, "to": "it-office", "spawnX": 9, "spawnY": 13 },
+      { "x": 3, "y": 6, "to": "west-corridor", "spawnX": 18, "spawnY": 2 }
+    ]
+  },
+
+  "west-corridor": {
+    "name": "West Block · Corridor",
+    "grid": [
+      "##L####L####D####L##",
+      "#..................#",
+      "#..................D",
+      "#..................#",
+      "##L####L####L####L##"
+    ],
+    "labels": [
+      { "x": 2, "y": 1, "text": "Room 1" },
+      { "x": 7, "y": 1, "text": "Room 2" },
+      { "x": 12, "y": 1, "text": "Room 3" },
+      { "x": 17, "y": 1, "text": "Room 4" },
+      { "x": 2, "y": 3, "text": "Room 5" },
+      { "x": 7, "y": 3, "text": "Room 6" },
+      { "x": 12, "y": 3, "text": "Kitchen" },
+      { "x": 17, "y": 3, "text": "Comms" }
+    ],
+    "doors": [
+      { "x": 19, "y": 2, "to": "campus", "spawnX": 4, "spawnY": 6 },
+      { "x": 12, "y": 0, "to": "west-room3", "spawnX": 2, "spawnY": 4 }
+    ]
+  },
+
+  "west-room3": {
+    "name": "West Block · Room 3 · Finance",
+    "grid": [
+      "##########",
+      "#.d..d..d#",
+      "#........#",
+      "#.d..d..d#",
+      "#........#",
+      "##D#######"
+    ],
+    "doors": [
+      { "x": 2, "y": 5, "to": "west-corridor", "spawnX": 12, "spawnY": 1 }
     ]
   }
 }

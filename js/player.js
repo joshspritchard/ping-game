@@ -49,6 +49,41 @@ function updatePlayer(map, dt) {
   // instead of getting stuck.
   if (dx !== 0) moveAxis(map, "x", dx * step);
   if (dy !== 0) moveAxis(map, "y", dy * step);
+
+  // Corner assist: paths and doors are only one tile wide, so it's easy to
+  // be a few pixels out of line and catch on a corner. If you're pressing
+  // one direction only and are stuck, nudge you into line with your tile.
+  if (dx !== 0 && dy === 0) nudgeIntoLine(map, "y", "x", dx, step);
+  if (dy !== 0 && dx === 0) nudgeIntoLine(map, "x", "y", dy, step);
+}
+
+// The player's position when they're exactly in the middle of a tile.
+function alignedPosition(position) {
+  const tile = Math.floor((position + PLAYER_SIZE / 2) / TILE);
+  return tile * TILE + (TILE - PLAYER_SIZE) / 2;
+}
+
+// sideAxis: the axis to nudge along. moveAxisName: the axis you're walking
+// along, and direction (+1/-1) which way.
+function nudgeIntoLine(map, sideAxis, moveAxisName, direction, step) {
+  // Not stuck? Then there's nothing to fix.
+  const ahead = { x: player.x, y: player.y };
+  ahead[moveAxisName] += direction;
+  if (canStandAt(map, ahead.x, ahead.y)) return;
+
+  // How far off the middle of the tile are we? Only help if it's close.
+  const target = alignedPosition(player[sideAxis]);
+  const offBy = target - player[sideAxis];
+  if (offBy === 0 || Math.abs(offBy) > TILE / 2) return;
+
+  // Only nudge if lining up would actually let you go forward.
+  const lined = { x: player.x, y: player.y };
+  lined[sideAxis] = target;
+  lined[moveAxisName] += direction;
+  if (!canStandAt(map, lined.x, lined.y)) return;
+
+  // Slide towards the middle by up to one step this frame.
+  moveAxis(map, sideAxis, Math.sign(offBy) * Math.min(step, Math.abs(offBy)));
 }
 
 // Try to move the player "amount" pixels along one axis ("x" or "y").

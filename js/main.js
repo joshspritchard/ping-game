@@ -11,8 +11,37 @@ const ctx = canvas.getContext("2d");
 const START_MAP = "it-office";
 const START_TILE = { x: 9, y: 12 };
 
-// The map the player is on right now.
+// Every map from maps.json, and the one the player is on right now.
+let maps = {};
 let currentMap = null;
+
+// Move the player to a map, standing on a given tile,
+// and show the map's name in the job bar.
+function goToMap(mapId, tileX, tileY) {
+  currentMap = maps[mapId];
+  placePlayer(tileX, tileY);
+  document.getElementById("location-text").textContent = currentMap.name;
+}
+
+// If the middle of the player is standing on a door, go through it.
+function checkDoors() {
+  // Which tile is the centre of the player in?
+  const tileX = Math.floor((player.x + PLAYER_SIZE / 2) / TILE);
+  const tileY = Math.floor((player.y + PLAYER_SIZE / 2) / TILE);
+
+  const door = findDoorAt(currentMap, tileX, tileY);
+  if (!door) return;
+
+  // A typo in "to" would crash the game, so check the map exists first.
+  if (!maps[door.to]) {
+    console.warn('Door leads to a map that does not exist: "' + door.to + '"');
+    return;
+  }
+
+  // Spawn next to the door on the other side, not on it,
+  // otherwise we'd go straight back through.
+  goToMap(door.to, door.spawnX, door.spawnY);
+}
 
 // When the last frame was drawn, so we can work out how much time passed.
 let lastTime = 0;
@@ -25,7 +54,8 @@ function gameLoop(time) {
   const dt = Math.min((time - lastTime) / 1000, 0.1);
   lastTime = time;
 
-  updatePlayer(currentMap, dt);   // 1. update: move the player
+  updatePlayer(currentMap, dt);   // 1. update: move the player...
+  checkDoors();                   //    ...and go through a door if on one
   drawMap(ctx, currentMap);       // 2. draw: the map first...
   drawPlayer(ctx, currentMap);    //    ...then the player on top
 
@@ -50,7 +80,6 @@ function showError(...lines) {
 async function start() {
   // Wait for maps.json to load (loadMaps is in world.js).
   // "try" means: if anything in here fails, jump to "catch" instead of stopping.
-  let maps;
   try {
     maps = await loadMaps();
   } catch (error) {
@@ -63,17 +92,12 @@ async function start() {
     return;
   }
 
-  const map = maps[START_MAP];
-  if (!map) {
+  if (!maps[START_MAP]) {
     showError('No map called "' + START_MAP + '" in maps.json');
     return;
   }
 
-  // Show the map's name in the job bar.
-  document.getElementById("location-text").textContent = map.name;
-
-  currentMap = map;
-  placePlayer(START_TILE.x, START_TILE.y);
+  goToMap(START_MAP, START_TILE.x, START_TILE.y);
 
   // Start the game loop.
   requestAnimationFrame((time) => {

@@ -2,9 +2,14 @@
 //
 // A map is a grid of characters. Each character is one 32px tile:
 //   #  wall
-//   .  floor
-//   D  door
+//   .  floor (or a path, outside)
+//   D  door you can walk through (listed in the map's "doors")
+//   L  locked door (a room we haven't built yet)
 //   P  ticket printer
+//   d  desk
+//   g  grass
+//   B  outside wall of a building
+//   c  car park
 
 // Every tile in the world is 32 x 32 pixels.
 const TILE = 32;
@@ -14,7 +19,12 @@ const TILE_COLOURS = {
   "#": "#3d4450", // wall: dark blue-grey
   ".": "#d9d4c7", // floor: light beige
   "D": "#8b5a2b", // door: brown
+  "L": "#4a3420", // locked door: dark brown
   "P": "#d9d4c7", // printer sits on floor; we draw the printer on top
+  "d": "#a67c52", // desk: wood
+  "g": "#7fae5a", // grass: green
+  "B": "#9a8f80", // building: stone grey
+  "c": "#5f6163", // car park: tarmac grey
 };
 
 // Load every map from data/maps.json.
@@ -39,7 +49,7 @@ function mapOffset(canvas, map) {
 }
 
 // Tiles you can't walk through.
-const SOLID_TILES = ["#", "P"];
+const SOLID_TILES = ["#", "P", "L", "d", "B"];
 
 // Can the player stand on this point? x and y are in pixels, measured
 // from the map's top-left corner (not the canvas's).
@@ -54,6 +64,11 @@ function isWalkable(map, x, y) {
   if (tileX < 0 || tileX >= row.length) return false;
 
   return !SOLID_TILES.includes(row[tileX]);
+}
+
+// Is there a door at this tile? Returns the door, or undefined if not.
+function findDoorAt(map, tileX, tileY) {
+  return map.doors.find((door) => door.x === tileX && door.y === tileY);
 }
 
 // Draw one whole map.
@@ -85,6 +100,35 @@ function drawMap(ctx, map) {
         ctx.fillStyle = "#ffffff";
         ctx.fillRect(px + 9, py + 4, TILE - 18, 8);
       }
+
+      // Car park: a white line on the left of each space.
+      if (tile === "c") {
+        ctx.fillStyle = "#e8e8e8";
+        ctx.fillRect(px, py + 4, 2, TILE - 8);
+      }
     }
+  }
+
+  drawLabels(ctx, map, offset);
+}
+
+// Draw the map's name signs (building names, door signs).
+// Each label's x and y are in tiles, and the text is centred on that tile.
+function drawLabels(ctx, map, offset) {
+  if (!map.labels) return;  // not every map has labels
+
+  ctx.font = "bold 11px system-ui, sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = "#1f1e1c";
+  ctx.fillStyle = "#ffffff";
+
+  for (const label of map.labels) {
+    const px = offset.x + label.x * TILE + TILE / 2;
+    const py = offset.y + label.y * TILE + TILE / 2;
+    // Dark outline first, then white text on top, so it's readable anywhere.
+    ctx.strokeText(label.text, px, py);
+    ctx.fillText(label.text, px, py);
   }
 }

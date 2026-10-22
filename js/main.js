@@ -62,9 +62,19 @@ function gameLoop(time) {
 
   updatePlayer(currentMap, dt);   // 1. update: move the player...
   checkDoors();                   //    ...and go through a door if on one
+
+  // What device is the player next to (if any)? Pressing E inspects it.
+  // For now that just prints it in the console (F12); the inspect panel
+  // comes in Issue 9.
+  const nearby = findNearbyDevice(devices, currentMapId);
+  if (wasPressed("interact") && nearby) {
+    console.log("Inspecting " + nearby.name, nearby);
+  }
+
   drawMap(ctx, currentMap);       // 2. draw: the map first...
-  drawDevices(ctx, currentMap, currentMapId, devices);  // ...then devices...
-  drawPlayer(ctx, currentMap);    //    ...then the player on top
+  drawDevices(ctx, currentMap, currentMapId, devices, nearby);  // ...then devices...
+  drawPlayer(ctx, currentMap);    //    ...then the player...
+  drawPrompt(ctx, currentMap, nearby);  // ...then the "Press E" prompt on top
 
   // Ask the browser to call gameLoop again before the next screen refresh.
   requestAnimationFrame(gameLoop);

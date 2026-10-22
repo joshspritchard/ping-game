@@ -121,7 +121,9 @@ function drawMap(ctx, map) {
 
 // Draw every device that's on this map, with its name underneath.
 // mapId is the map's name in maps.json, e.g. "west-room3".
-function drawDevices(ctx, map, mapId, devices) {
+// nearby is the device the player is next to: we skip its label, because
+// the player would cover it, and the prompt shows its name instead.
+function drawDevices(ctx, map, mapId, devices, nearby) {
   const offset = mapOffset(ctx.canvas, map);
 
   // filter() keeps only the devices whose "map" matches the one we're on.
@@ -131,7 +133,7 @@ function drawDevices(ctx, map, mapId, devices) {
     const px = offset.x + device.x * TILE;
     const py = offset.y + device.y * TILE;
     drawDeviceIcon(ctx, device, px, py);
-    drawDeviceLabel(ctx, device, px, py);
+    if (device !== nearby) drawDeviceLabel(ctx, device, px, py);
   }
 }
 
@@ -180,6 +182,21 @@ function drawDeviceIcon(ctx, device, px, py) {
 function drawDeviceLabel(ctx, device, px, py) {
   const connects = device.connection === "wifi" ? "Wi-Fi" : "Wired";
   drawTag(ctx, [device.name, connects], px + TILE / 2, py + TILE + 3);
+}
+
+// Show which device you're next to: a yellow outline around it, and
+// "E · Inspect <name>" along the bottom of the screen.
+function drawPrompt(ctx, map, device) {
+  if (!device) return;  // not next to anything
+
+  const offset = mapOffset(ctx.canvas, map);
+  ctx.strokeStyle = "#ffd23f";
+  ctx.lineWidth = 2;
+  ctx.strokeRect(offset.x + device.x * TILE + 1, offset.y + device.y * TILE + 1, TILE - 2, TILE - 2);
+
+  const connects = device.connection === "wifi" ? "Wi-Fi" : "Wired";
+  drawTag(ctx, ["E · Inspect " + device.name, device.owner + " · " + connects],
+          ctx.canvas.width / 2, ctx.canvas.height - 44);
 }
 
 // Fonts and colours for labels: line 1 is the main text, line 2 is smaller.

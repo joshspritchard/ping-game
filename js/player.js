@@ -109,6 +109,36 @@ function moveAxis(map, axis, amount) {
   }
 }
 
+// How close the player's centre must be to a device's centre to use it.
+// 40 pixels means "touching it", including from a diagonal corner.
+const REACH = 40;
+
+// "What am I next to?" Returns the closest device on this map that's within
+// reach, or null if there isn't one.
+function findNearbyDevice(devices, mapId) {
+  const playerCentreX = player.x + PLAYER_SIZE / 2;
+  const playerCentreY = player.y + PLAYER_SIZE / 2;
+
+  let closest = null;
+  let closestDistance = REACH;
+
+  for (const device of devices) {
+    if (device.map !== mapId) continue;  // skip devices on other maps
+
+    const deviceCentreX = device.x * TILE + TILE / 2;
+    const deviceCentreY = device.y * TILE + TILE / 2;
+
+    // Pythagoras: the straight-line distance between the two centres.
+    const distance = Math.hypot(deviceCentreX - playerCentreX, deviceCentreY - playerCentreY);
+
+    if (distance <= closestDistance) {
+      closest = device;
+      closestDistance = distance;
+    }
+  }
+  return closest;
+}
+
 // Draw the player as a blue square with a darker outline.
 function drawPlayer(ctx, map) {
   const offset = mapOffset(ctx.canvas, map);

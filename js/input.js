@@ -1,22 +1,28 @@
-// input.js: keeps track of which keys are held down right now.
+// input.js: keeps track of the keyboard.
 //
 // The browser tells us when a key goes down ("keydown") and when it
-// comes back up ("keyup"). We remember each one in the "held" object,
-// so the game loop can ask "is the left key down?" at any moment.
+// comes back up ("keyup"). We keep two records:
+//   held:    keys being held down right now (for walking)
+//   pressed: keys that were tapped since the game last checked
+//            (for one-off actions like E, so holding E doesn't repeat)
 
 const held = {};
+const pressed = {};
 
-// Which keys count as which direction. Each direction has two keys:
-// an arrow key and a WASD key.
+// Which keys do what. Each action can have more than one key.
 const KEY_BINDINGS = {
-  up:    ["ArrowUp", "KeyW"],
-  down:  ["ArrowDown", "KeyS"],
-  left:  ["ArrowLeft", "KeyA"],
-  right: ["ArrowRight", "KeyD"],
+  up:       ["ArrowUp", "KeyW"],
+  down:     ["ArrowDown", "KeyS"],
+  left:     ["ArrowLeft", "KeyA"],
+  right:    ["ArrowRight", "KeyD"],
+  interact: ["KeyE"],
 };
 
 window.addEventListener("keydown", (event) => {
   held[event.code] = true;
+  // When you hold a key, the browser sends keydown again and again
+  // ("repeat"). Only count the first one as a press.
+  if (!event.repeat) pressed[event.code] = true;
   // Stop arrow keys from scrolling the page while you play.
   if (event.code.startsWith("Arrow")) event.preventDefault();
 });
@@ -31,7 +37,18 @@ window.addEventListener("blur", () => {
   for (const code in held) held[code] = false;
 });
 
-// Is a direction ("up", "down", "left", "right") being held?
-function isDown(direction) {
-  return KEY_BINDINGS[direction].some((code) => held[code]);
+// Is an action ("up", "down", "left", "right") being held?
+function isDown(action) {
+  return KEY_BINDINGS[action].some((code) => held[code]);
+}
+
+// Was an action's key tapped since we last asked? Asking "uses up" the
+// press, so one tap of E only does one thing.
+function wasPressed(action) {
+  let result = false;
+  for (const code of KEY_BINDINGS[action]) {
+    if (pressed[code]) result = true;
+    pressed[code] = false;
+  }
+  return result;
 }

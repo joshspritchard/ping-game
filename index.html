@@ -36,6 +36,65 @@
       </table>
       <button id="sheet-close">Take the job (E)</button>
     </div>
+
+    <!-- The config screen: pops up when you press E at a device.
+         inspect.js fills in the boxes and shows only the rows that fit
+         the device (Wi-Fi rows for Wi-Fi devices, cable rows for wired ones). -->
+    <form id="inspect-panel" class="screen" hidden>
+      <div class="screen-header">
+        <span id="insp-name">Device</span>
+        <span id="insp-id" class="screen-muted">ID</span>
+      </div>
+      <p id="insp-owner" class="screen-muted"></p>
+
+      <!-- Two columns: how it connects on the left, IP settings on the right -->
+      <div class="screen-columns">
+      <div>
+      <fieldset class="wifi-only">
+        <legend>Wi-Fi</legend>
+        <label>Wi-Fi on <input type="checkbox" id="insp-wifi-on"></label>
+        <label>Network (SSID)
+          <select id="insp-ssid">
+            <option>CORP-WIFI</option>
+            <option>GUEST-WIFI</option>
+          </select>
+        </label>
+        <label>Password <input type="text" id="insp-password" autocomplete="off" spellcheck="false"></label>
+      </fieldset>
+
+      <fieldset class="wired-only">
+        <legend>Cable</legend>
+        <label>Cable plugged in <input type="checkbox" id="insp-cable"></label>
+        <label>Switch port <input type="number" id="insp-port" min="1" max="48"></label>
+      </fieldset>
+
+      <fieldset class="ap-only">
+        <legend>Access point</legend>
+        <label>Power on <input type="checkbox" id="insp-ap-on"></label>
+        <p class="screen-muted">Broadcasts: <span id="insp-ssids"></span></p>
+      </fieldset>
+      </div>
+
+      <fieldset class="ip-only">
+        <legend>IP settings</legend>
+        <label>IP address
+          <select id="insp-ip-mode">
+            <option value="dhcp">DHCP (auto)</option>
+            <option value="static">Static</option>
+          </select>
+        </label>
+        <label>Static IP <input type="text" id="insp-ip" autocomplete="off" spellcheck="false"></label>
+        <label>Subnet mask <input type="text" id="insp-mask" autocomplete="off" spellcheck="false"></label>
+        <label>Gateway <input type="text" id="insp-gateway" autocomplete="off" spellcheck="false"></label>
+        <label>DNS server <input type="text" id="insp-dns" autocomplete="off" spellcheck="false"></label>
+      </fieldset>
+      </div>
+
+      <div class="screen-buttons">
+        <button type="button" id="insp-cancel" class="secondary">Close (Esc)</button>
+        <button type="submit">Save changes (Enter)</button>
+      </div>
+    </form>
   </div>
 
   <!-- Load the game code last, so the canvas above already exists when it runs.
@@ -44,6 +103,7 @@
   <script src="js/world.js"></script>
   <script src="js/player.js"></script>
   <script src="js/tickets.js"></script>
+  <script src="js/inspect.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

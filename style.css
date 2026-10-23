@@ -123,3 +123,122 @@ body {
 .paper button:hover {
   background: #1f5bb5;
 }
+
+/* The config screen: a dark "computer settings" window over the game */
+.screen {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  max-width: 96%;
+  max-height: 96%;
+  overflow-y: auto;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 14px 18px;
+  background: #1e2530;
+  color: #e6edf5;
+  border: 1px solid #3d4a5c;
+  border-radius: 8px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+  font-size: 0.9rem;
+}
+
+.screen[hidden],
+.screen fieldset[hidden] {
+  display: none;
+}
+
+.screen-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-weight: bold;
+  font-size: 1.05rem;
+}
+
+.screen-muted {
+  color: #93a1b3;
+  font-size: 0.85rem;
+  font-weight: normal;
+  margin: 2px 0 8px;
+}
+
+.screen-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  align-items: start;
+}
+
+/* On a narrow screen, put the columns one under the other */
+@media (max-width: 620px) {
+  .screen-columns { grid-template-columns: 1fr; }
+}
+
+.screen fieldset {
+  min-width: 0;
+  border: 1px solid #3d4a5c;
+  border-radius: 6px;
+  margin: 0 0 10px;
+  padding: 6px 12px 8px;
+}
+
+.screen legend {
+  color: #6aa3f5;
+  font-weight: bold;
+  padding: 0 4px;
+}
+
+/* Each setting: name on the left, box on the right */
+.screen label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 3px 0;
+}
+
+.screen input[type="text"],
+.screen input[type="number"],
+.screen select {
+  width: 150px;
+  box-sizing: border-box;
+  padding: 4px 6px;
+  background: #111720;
+  color: #e6edf5;
+  border: 1px solid #4b5a70;
+  border-radius: 4px;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.85rem;
+}
+
+.screen input:disabled {
+  color: #66748a;
+}
+
+.screen input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+}
+
+.screen-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.screen button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 4px;
+  background: #2a6fd6;
+  color: #fff;
+  font: bold 0.9rem system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.screen button.secondary {
+  background: #3d4a5c;
+}

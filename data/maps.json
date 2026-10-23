@@ -57,14 +57,14 @@
   "west-corridor": {
     "name": "West Block · Corridor",
     "grid": [
-      "##L####L####D####L##",
+      "##D####L####D####L##",
       "#..................#",
       "#..................D",
       "#..................#",
       "##L####L####L####L##"
     ],
     "labels": [
-      { "x": 2, "y": 1, "text": "Room 1" },
+      { "x": 2, "y": 1, "text": "Print room" },
       { "x": 7, "y": 1, "text": "Room 2" },
       { "x": 12, "y": 1, "text": "Room 3" },
       { "x": 17, "y": 1, "text": "Room 4" },
@@ -75,7 +75,8 @@
     ],
     "doors": [
       { "x": 19, "y": 2, "to": "campus", "spawnX": 4, "spawnY": 6 },
-      { "x": 12, "y": 0, "to": "west-room3", "spawnX": 6, "spawnY": 11 }
+      { "x": 12, "y": 0, "to": "west-room3", "spawnX": 6, "spawnY": 11 },
+      { "x": 2, "y": 0, "to": "west-print", "spawnX": 3, "spawnY": 7 }
     ]
   },
 
@@ -98,6 +99,24 @@
     ],
     "doors": [
       { "x": 6, "y": 12, "to": "west-corridor", "spawnX": 12, "spawnY": 1 }
+    ]
+  },
+
+  "west-print": {
+    "name": "West Block · Print room",
+    "grid": [
+      "##############",
+      "#............#",
+      "#.....dd.....#",
+      "#............#",
+      "#............#",
+      "#............#",
+      "#............#",
+      "#............#",
+      "###D##########"
+    ],
+    "doors": [
+      { "x": 3, "y": 8, "to": "west-corridor", "spawnX": 2, "spawnY": 1 }
     ]
   }
 }

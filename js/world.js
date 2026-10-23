@@ -33,14 +33,21 @@ const TILE_COLOURS = {
 // This is why you need Live Server: fetch doesn't work on a file opened
 // by double-clicking.
 async function loadMaps() {
-  const response = await fetch("data/maps.json");
-  return await response.json();
+  return await loadJson("data/maps.json");
 }
 
 // Load every device (PCs, laptops, access points...) from data/devices.json.
 // It's a list, and each device says which map it's on and which tile.
 async function loadDevices() {
-  const response = await fetch("data/devices.json");
+  return await loadJson("data/devices.json");
+}
+
+// Fetch a JSON data file. Browsers keep copies of files they've loaded (a
+// "cache") and can hand back an old copy, even after Ctrl+F5. "no-cache"
+// tells the browser to always check with the server for a newer version,
+// so edits to the data files show up straight away.
+async function loadJson(path) {
+  const response = await fetch(path, { cache: "no-cache" });
   return await response.json();
 }
 
@@ -156,6 +163,16 @@ function drawDeviceIcon(ctx, device, px, py) {
     ctx.fillRect(px + 10, py + 10, 12, 7);
     ctx.fillStyle = "#777";
     ctx.fillRect(px + 6, py + 19, 20, 5);
+  } else if (device.type === "printer") {
+    // A printer: grey body, white paper sticking out the top, a green light.
+    ctx.fillStyle = "#f2f2f2";
+    ctx.fillRect(px + 10, py + 4, 12, 8);
+    ctx.fillStyle = "#555";
+    ctx.fillRect(px + 5, py + 11, 22, 13);
+    ctx.fillStyle = "#333";
+    ctx.fillRect(px + 9, py + 19, 14, 3);
+    ctx.fillStyle = "#2ecc40";
+    ctx.fillRect(px + 22, py + 13, 3, 3);
   } else if (device.type === "ap") {
     // An access point: a white disc with a light (green = on, red = off).
     ctx.fillStyle = "#f2f2f2";

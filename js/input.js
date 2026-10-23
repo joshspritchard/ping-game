@@ -15,6 +15,7 @@ const KEY_BINDINGS = {
   down:     ["ArrowDown", "KeyS"],
   left:     ["ArrowLeft", "KeyA"],
   right:    ["ArrowRight", "KeyD"],
+  sprint:   ["ShiftLeft", "ShiftRight"],
   interact: ["KeyE"],
   close:    ["Escape", "Enter"],
   cancel:   ["Escape"],

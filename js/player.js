@@ -7,6 +7,9 @@ const PLAYER_SIZE = 24;
 // How fast the player walks, in pixels per second (about 4 tiles a second).
 const PLAYER_SPEED = 130;
 
+// Holding Shift makes the player run this many times faster.
+const SPRINT_MULTIPLIER = 1.8;
+
 // x and y are the player's top-left corner, in pixels from the map's top-left.
 const player = { x: 0, y: 0 };
 
@@ -42,7 +45,9 @@ function updatePlayer(map, dt) {
   if (isDown("up")) dy -= 1;
   if (isDown("down")) dy += 1;
 
-  const step = PLAYER_SPEED * dt;
+  // Sprinting (holding Shift) multiplies the speed.
+  const speed = isDown("sprint") ? PLAYER_SPEED * SPRINT_MULTIPLIER : PLAYER_SPEED;
+  const step = speed * dt;
 
   // Move sideways first, then up/down, checking each one separately.
   // That way, if you walk diagonally into a wall, you slide along it

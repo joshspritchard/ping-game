@@ -8,5 +8,35 @@
     "fault": { "wifi.ssid": "GUEST-WIFI" },
     "fixedWhen": { "canReach": "fileserver" },
     "hint": "Guest Wi-Fi gets the internet but not company servers."
+  },
+  {
+    "id": "002",
+    "problem": "The West Block printer keeps dropping off the network. Nobody can print.",
+    "location": "West Block, Print room",
+    "device": "WB-PR-PRN1",
+    "reportedBy": "Mike, Finance",
+    "fault": { "ip": "192.168.1.24" },
+    "fixedWhen": { "canReach": "fileserver" },
+    "hint": "Two devices can't share one IP address. Who else uses 192.168.1.24?"
+  },
+  {
+    "id": "003",
+    "problem": "Tom can open files on the server, but no websites will load.",
+    "location": "West Block, Room 3",
+    "device": "WB-R3-PC2",
+    "reportedBy": "Tom, Finance",
+    "fault": { "gateway": "" },
+    "fixedWhen": { "canReach": "internet" },
+    "hint": "To leave the office network, a device needs a default gateway (the router)."
+  },
+  {
+    "id": "004",
+    "problem": "Priya's laptop says \"fileserver not found\", but IT can ping the server's IP from it.",
+    "location": "West Block, Room 3",
+    "device": "WB-R3-LT1",
+    "reportedBy": "Priya, Finance",
+    "fault": { "dns": "" },
+    "fixedWhen": { "canReach": "fileserver" },
+    "hint": "DNS turns names like \"fileserver\" into IP addresses. Compare with a PC that works."
   }
 ]

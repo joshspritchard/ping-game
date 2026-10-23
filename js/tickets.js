@@ -9,8 +9,7 @@ let nextTicketIndex = 0;   // which ticket the printer gives out next
 let lastClosedTicket = null;  // the job you fixed most recently
 
 async function loadTickets() {
-  const response = await fetch("data/tickets.json");
-  return await response.json();
+  return await loadJson("data/tickets.json");  // loadJson is in world.js
 }
 
 // Is the player next to a ticket printer ("P" tile) on this map?

@@ -39,9 +39,49 @@ function usePrinter(devices) {
     }
     currentTicket = tickets[nextTicketIndex];
     nextTicketIndex++;
+    startTicket(currentTicket, devices);
     updateJobBar(devices);
   }
   showJobSheet(currentTicket, devices);
+}
+
+// Starting a job breaks the device, so there's something to fix.
+// devices.json holds each device's WORKING settings. We make a copy of the
+// device, break the copy, and swap the copy into the game. The original is
+// kept safe, so later we can compare against it or put things back.
+function startTicket(ticket, devices) {
+  const index = devices.findIndex((device) => device.id === ticket.device);
+  if (index === -1) {
+    console.warn('Ticket #' + ticket.id + ' is for a device that does not exist: "' + ticket.device + '"');
+    return;
+  }
+
+  // structuredClone makes a full copy, including the settings inside
+  // "wifi", so changing the copy can't change the original.
+  const broken = structuredClone(devices[index]);
+  applyFault(broken, ticket.fault);
+  devices[index] = broken;
+
+  console.log("Ticket #" + ticket.id + " broke " + broken.name + ":", ticket.fault);
+}
+
+// Change the settings listed in a fault. Each key is a "path" to a setting,
+// with dots between the levels, e.g. "wifi.ssid" means device.wifi.ssid.
+//   applyFault(device, { "wifi.ssid": "GUEST-WIFI", "gateway": "" })
+function applyFault(device, fault) {
+  for (const path in fault) {
+    const parts = path.split(".");          // "wifi.ssid" → ["wifi", "ssid"]
+    const last = parts.pop();               // "ssid"; parts is now ["wifi"]
+
+    // Walk down to the object that holds the setting (device.wifi).
+    let target = device;
+    for (const part of parts) {
+      if (target[part] === undefined) target[part] = {};
+      target = target[part];
+    }
+
+    target[last] = fault[path];             // device.wifi.ssid = "GUEST-WIFI"
+  }
 }
 
 // Find a device by its id, e.g. "WB-R3-PC1" → Sarah's PC.

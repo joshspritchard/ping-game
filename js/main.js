@@ -89,7 +89,7 @@ function gameLoop(time) {
       prompt = {
         x: nearbyPrinter.x, y: nearbyPrinter.y,
         lines: [currentTicket ? "E · Read job sheet #" + currentTicket.id
-              : printerHasJobs() ? "E · Collect a job"
+              : printerHasJobs() ? "E · Collect job #" + nextJobId()
               : "No more jobs: all fixed!"],
       };
       if (pressedE) usePrinter(devices);
@@ -98,6 +98,7 @@ function gameLoop(time) {
 
   drawMap(ctx, currentMap);       // 2. draw: the map first...
   drawDevices(ctx, currentMap, currentMapId, devices, nearbyDevice);  // ...then devices...
+  drawPrinterAlert(ctx, currentMap, time);  // ...a "New job!" tag if one is waiting...
   drawPlayer(ctx, currentMap);    //    ...then the player...
   drawPrompt(ctx, currentMap, prompt);  // ...then the "Press E" prompt on top
 
@@ -144,6 +145,7 @@ async function start() {
   }
 
   goToMap(START_MAP, START_TILE.x, START_TILE.y);
+  updateJobBar(devices);  // fill in the jobs counter (✓ 0 / 4)
 
   // Start the game loop.
   requestAnimationFrame((time) => {

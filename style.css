@@ -37,6 +37,17 @@ body {
   color: #a9a69e;
 }
 
+/* The jobs-fixed counter: a small green badge */
+#jobs-counter {
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: #1f6f43;
+  color: #fff;
+  font-weight: bold;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
 /* The game area holds the canvas, and pop-ups placed on top of it.
    "position: relative" lets the pop-ups be positioned inside it. */
 #game-area {

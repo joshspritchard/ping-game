@@ -7,6 +7,7 @@ let tickets = [];          // every ticket from tickets.json
 let currentTicket = null;  // the job you're working on (null = no job)
 let nextTicketIndex = 0;   // which ticket the printer gives out next
 let lastClosedTicket = null;  // the job you fixed most recently
+let jobsClosed = 0;           // how many jobs you've fixed so far
 
 async function loadTickets() {
   return await loadJson("data/tickets.json");  // loadJson is in world.js
@@ -112,11 +113,18 @@ function isJobSheetOpen() {
 
 // Show the current job in the job bar, so you remember it while you walk.
 function updateJobBar(devices) {
+  // The counter: jobs fixed out of all the jobs in tickets.json.
+  document.getElementById("jobs-counter").textContent = "✓ " + jobsClosed + " / " + tickets.length;
+
   const jobText = document.getElementById("job-text");
   if (!currentTicket) {
-    jobText.textContent = lastClosedTicket
-      ? "Job #" + lastClosedTicket.id + " closed ✓ · visit the ticket printer"
-      : "No job yet: visit the ticket printer";
+    if (!lastClosedTicket) {
+      jobText.textContent = "No job yet: visit the ticket printer";
+    } else if (printerHasJobs()) {
+      jobText.textContent = "Job #" + lastClosedTicket.id + " closed ✓ · next job waiting at the printer";
+    } else {
+      jobText.textContent = "All jobs fixed! Great work.";
+    }
     return;
   }
   const device = findDevice(devices, currentTicket.device);
@@ -138,6 +146,7 @@ function checkTicketFixed(devices) {
   // Fixed! Close the job, so the printer can hand out the next one.
   lastClosedTicket = currentTicket;
   currentTicket = null;
+  jobsClosed++;
   updateJobBar(devices);
   console.log("Job #" + lastClosedTicket.id + " closed.");
   return lastClosedTicket;
@@ -146,6 +155,36 @@ function checkTicketFixed(devices) {
 // Are there any jobs left for the printer to hand out?
 function printerHasJobs() {
   return nextTicketIndex < tickets.length;
+}
+
+// Is a job sitting in the printer, waiting to be collected? (You can only
+// have one job at a time, so not while you're working on one.)
+function isJobWaiting() {
+  return !currentTicket && printerHasJobs();
+}
+
+// The number of the job the printer will hand out next, e.g. "002".
+function nextJobId() {
+  return printerHasJobs() ? tickets[nextTicketIndex].id : null;
+}
+
+// When a job is waiting, draw a "New job!" tag bobbing above every ticket
+// printer on this map, so you can spot it from across the room.
+// time is in milliseconds, from the game loop.
+function drawPrinterAlert(ctx, map, time) {
+  if (!isJobWaiting()) return;
+
+  const offset = mapOffset(ctx.canvas, map);
+  const bob = Math.round(Math.sin(time / 200) * 3);  // moves up and down by 3px
+
+  for (let y = 0; y < map.grid.length; y++) {
+    for (let x = 0; x < map.grid[y].length; x++) {
+      if (map.grid[y][x] !== "P") continue;
+      const centreX = offset.x + x * TILE + TILE / 2;
+      const top = offset.y + y * TILE - 24 + bob;
+      drawTag(ctx, ["New job #" + nextJobId()], centreX, Math.max(top, 2));
+    }
+  }
 }
 
 // Clicking the button on the sheet closes it too.

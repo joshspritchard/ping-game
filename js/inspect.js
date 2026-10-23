@@ -1,10 +1,20 @@
 // inspect.js: the config screen for a device.
 //
 // Pressing E at a device opens it. It shows the device's real settings in
-// boxes you can change. "Save changes" copies the boxes back into the
-// device; "Close" (or Esc) throws your changes away.
+// boxes you can change, and pings to see what the device can reach.
+// "Apply and re-test" copies the boxes back into the device and pings again;
+// if that fixes the current job, the job closes. "Close" (or Esc) throws
+// away anything you haven't applied.
 
 let inspectedDevice = null;  // the device on screen right now (null = closed)
+
+// The pings a technician would try: by name, by IP, and the internet.
+// Trying the fileserver both ways shows whether DNS is the problem.
+const PINGS = [
+  { target: "fileserver",   label: "ping fileserver" },
+  { target: "192.168.1.50", label: "ping 192.168.1.50" },
+  { target: "internet",     label: "ping internet" },
+];
 
 // Shortcut: find an element on the page by its id.
 function el(id) {
@@ -54,8 +64,36 @@ function openInspect(device) {
     updateIpBox();
   }
 
+  showPings(device, null);  // show what's working (and what isn't) right now
   clearPresses();  // don't let the E that opened this count for anything else
   el("inspect-panel").hidden = false;
+}
+
+// Run every ping for this device and list the results on the screen.
+// closedTicket is the job that was just fixed (or null), to show a message.
+// "devices" is the list of every device, kept in main.js.
+function showPings(device, closedTicket) {
+  const results = el("insp-results");
+  results.textContent = "";  // clear the old results
+
+  // An access point isn't a computer, so it can't ping anything itself.
+  if (device.type !== "ap") {
+    for (const ping of PINGS) {
+      const result = testConnection(device, ping.target, devices);
+      const line = document.createElement("div");
+      line.className = "ping-line " + (result.ok ? "ping-ok" : "ping-fail");
+      line.textContent = (result.ok ? "✓ " : "✗ ") + ping.label + " · " + result.reason;
+      results.appendChild(line);
+    }
+  }
+
+  if (closedTicket) {
+    const fixed = document.createElement("div");
+    fixed.className = "ping-fixed";
+    fixed.textContent = "Fixed! Job #" + closedTicket.id + " is closed."
+      + (printerHasJobs() ? " The printer has your next job." : " That was the last job!");
+    results.appendChild(fixed);
+  }
 }
 
 // The Static IP box can only be typed in when "Static" is chosen.
@@ -65,8 +103,10 @@ function updateIpBox() {
   el("insp-ip").placeholder = isStatic ? "e.g. 192.168.1.30" : "(given out by DHCP)";
 }
 
-// Copy what's in the boxes back into the device.
-function saveInspect() {
+// "Apply and re-test": copy what's in the boxes back into the device, then
+// ping again and check whether that fixed the current job. The screen
+// stays open so you can see the results.
+function applyAndRetest() {
   const device = inspectedDevice;
   if (!device) return;  // the screen isn't open, so there's nothing to save
 
@@ -89,8 +129,12 @@ function saveInspect() {
     device.dns = el("insp-dns").value.trim();
   }
 
-  console.log("Saved " + device.name + ":", device);
-  closeInspect();
+  console.log("Applied " + device.name + ":", device);
+
+  // Fixing one device can fix the job's device (e.g. switching an access
+  // point back on), so check the job whichever device you changed.
+  const closedTicket = checkTicketFixed(devices);
+  showPings(device, closedTicket);
 }
 
 function closeInspect() {
@@ -105,5 +149,5 @@ el("insp-cancel").addEventListener("click", closeInspect);
 // The form is "submitted" by the Save button or by pressing Enter in a box.
 el("inspect-panel").addEventListener("submit", (event) => {
   event.preventDefault();  // stop the browser reloading the page
-  saveInspect();
+  applyAndRetest();
 });

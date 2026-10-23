@@ -88,7 +88,9 @@ function gameLoop(time) {
     } else if (nearbyPrinter) {
       prompt = {
         x: nearbyPrinter.x, y: nearbyPrinter.y,
-        lines: [currentTicket ? "E · Read job sheet #" + currentTicket.id : "E · Collect a job"],
+        lines: [currentTicket ? "E · Read job sheet #" + currentTicket.id
+              : printerHasJobs() ? "E · Collect a job"
+              : "No more jobs: all fixed!"],
       };
       if (pressedE) usePrinter(devices);
     }

@@ -6,6 +6,7 @@
 let tickets = [];          // every ticket from tickets.json
 let currentTicket = null;  // the job you're working on (null = no job)
 let nextTicketIndex = 0;   // which ticket the printer gives out next
+let lastClosedTicket = null;  // the job you fixed most recently
 
 async function loadTickets() {
   const response = await fetch("data/tickets.json");
@@ -114,12 +115,38 @@ function isJobSheetOpen() {
 function updateJobBar(devices) {
   const jobText = document.getElementById("job-text");
   if (!currentTicket) {
-    jobText.textContent = "No job yet: visit the ticket printer";
+    jobText.textContent = lastClosedTicket
+      ? "Job #" + lastClosedTicket.id + " closed ✓ · visit the ticket printer"
+      : "No job yet: visit the ticket printer";
     return;
   }
   const device = findDevice(devices, currentTicket.device);
   const deviceName = device ? device.name : currentTicket.device;
   jobText.textContent = "Job #" + currentTicket.id + " · " + deviceName + " · " + currentTicket.location;
+}
+
+// Is the current job fixed? Each ticket's "fixedWhen" says what must work
+// again, e.g. { "canReach": "fileserver" } means the broken device must be
+// able to reach the fileserver. If it's fixed, the job closes.
+// Returns the ticket that was closed, or null if nothing closed.
+function checkTicketFixed(devices) {
+  if (!currentTicket) return null;
+
+  const device = findDevice(devices, currentTicket.device);
+  const result = testConnection(device, currentTicket.fixedWhen.canReach, devices);
+  if (!result.ok) return null;
+
+  // Fixed! Close the job, so the printer can hand out the next one.
+  lastClosedTicket = currentTicket;
+  currentTicket = null;
+  updateJobBar(devices);
+  console.log("Job #" + lastClosedTicket.id + " closed.");
+  return lastClosedTicket;
+}
+
+// Are there any jobs left for the printer to hand out?
+function printerHasJobs() {
+  return nextTicketIndex < tickets.length;
 }
 
 // Clicking the button on the sheet closes it too.

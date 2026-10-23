@@ -242,3 +242,35 @@ body {
 .screen button.secondary {
   background: #3d4a5c;
 }
+
+/* Ping results on the config screen */
+.screen-results {
+  margin: 0 0 10px;
+  padding: 6px 10px;
+  background: #111720;
+  border: 1px solid #3d4a5c;
+  border-radius: 6px;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.8rem;
+}
+
+.screen-results:empty {
+  display: none;
+}
+
+.ping-line {
+  margin: 2px 0;
+}
+
+.ping-ok   { color: #5fd38d; }
+.ping-fail { color: #ff8a80; }
+
+/* The "job fixed" message */
+.ping-fixed {
+  margin: 6px 0 2px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  background: #1f6f43;
+  color: #fff;
+  font: bold 0.9rem system-ui, sans-serif;
+}

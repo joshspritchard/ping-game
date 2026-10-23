@@ -69,6 +69,7 @@ function gameLoop(time) {
     if (wasPressed("interact") || wasPressed("close")) hideJobSheet();
   } else if (isInspectOpen()) {
     if (wasPressed("cancel")) closeInspect();
+    else if (wasPressed("hint")) showHint();
   } else {
     updatePlayer(currentMap, dt);   // 1. update: move the player...
     checkDoors();                   //    ...and go through a door if on one

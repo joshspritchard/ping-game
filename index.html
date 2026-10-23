@@ -95,7 +95,11 @@
            inspect.js fills this in when the screen opens and after a re-test. -->
       <div id="insp-results" class="screen-results"></div>
 
+      <!-- The current job's hint, hidden until you ask for it -->
+      <p id="insp-hint-text" class="screen-hint" hidden></p>
+
       <div class="screen-buttons">
+        <button type="button" id="insp-hint" class="secondary hint-button">Hint (H)</button>
         <button type="button" id="insp-cancel" class="secondary">Close (Esc)</button>
         <button type="submit">Apply and re-test (Enter)</button>
       </div>

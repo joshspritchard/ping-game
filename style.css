@@ -147,7 +147,7 @@ body {
   overflow-y: auto;
   box-sizing: border-box;
   margin: 0;
-  padding: 14px 18px;
+  padding: 10px 16px;
   background: #1e2530;
   color: #e6edf5;
   border: 1px solid #3d4a5c;
@@ -173,7 +173,7 @@ body {
   color: #93a1b3;
   font-size: 0.85rem;
   font-weight: normal;
-  margin: 2px 0 8px;
+  margin: 0 0 6px;
 }
 
 .screen-columns {
@@ -192,8 +192,8 @@ body {
   min-width: 0;
   border: 1px solid #3d4a5c;
   border-radius: 6px;
-  margin: 0 0 10px;
-  padding: 6px 12px 8px;
+  margin: 0 0 8px;
+  padding: 4px 12px 6px;
 }
 
 .screen legend {
@@ -208,7 +208,7 @@ body {
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  padding: 3px 0;
+  padding: 2px 0;
 }
 
 .screen input[type="text"],
@@ -256,8 +256,8 @@ body {
 
 /* Ping results on the config screen */
 .screen-results {
-  margin: 0 0 10px;
-  padding: 6px 10px;
+  margin: 0 0 8px;
+  padding: 4px 10px;
   background: #111720;
   border: 1px solid #3d4a5c;
   border-radius: 6px;
@@ -284,4 +284,25 @@ body {
   background: #1f6f43;
   color: #fff;
   font: bold 0.9rem system-ui, sans-serif;
+}
+
+/* The hint on the config screen: a yellow note */
+.screen-hint {
+  margin: 0 0 8px;
+  padding: 4px 10px;
+  border-left: 4px solid #ffd23f;
+  border-radius: 4px;
+  background: #3a3318;
+  color: #fff3c4;
+  font-size: 0.85rem;
+}
+
+.screen-hint[hidden],
+.screen button[hidden] {
+  display: none;
+}
+
+/* The Hint button sits on the left, away from Close and Apply */
+.hint-button {
+  margin-right: auto;
 }

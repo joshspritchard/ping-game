@@ -19,6 +19,7 @@ const KEY_BINDINGS = {
   interact: ["KeyE"],
   close:    ["Escape", "Enter"],
   cancel:   ["Escape"],
+  hint:     ["KeyH"],
 };
 
 // Is the player typing in a box (e.g. on the config screen)?
@@ -31,7 +32,10 @@ window.addEventListener("keydown", (event) => {
   held[event.code] = true;
   // When you hold a key, the browser sends keydown again and again
   // ("repeat"). Only count the first one as a press.
-  if (!event.repeat) pressed[event.code] = true;
+  // Letters typed into a box are just typing, not game keys: typing "h"
+  // in the password box mustn't open the hint.
+  const typingALetter = isTyping(event) && event.code.startsWith("Key");
+  if (!event.repeat && !typingALetter) pressed[event.code] = true;
   // Stop arrow keys from scrolling the page while you play,
   // but let them move the cursor when typing in a box.
   if (event.code.startsWith("Arrow") && !isTyping(event)) event.preventDefault();

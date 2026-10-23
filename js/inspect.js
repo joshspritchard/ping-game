@@ -65,6 +65,7 @@ function openInspect(device) {
   }
 
   showPings(device, null);  // show what's working (and what isn't) right now
+  hideHint();
   clearPresses();  // don't let the E that opened this count for anything else
   el("inspect-panel").hidden = false;
 }
@@ -94,6 +95,20 @@ function showPings(device, closedTicket) {
       + (printerHasJobs() ? " The printer has your next job." : " That was the last job!");
     results.appendChild(fixed);
   }
+}
+
+// Hints: every ticket has one in tickets.json. It stays hidden until you
+// ask, so you get the chance to work it out yourself first.
+function showHint() {
+  if (!currentTicket) return;  // no job, no hint
+  el("insp-hint-text").textContent = "Hint for job #" + currentTicket.id + ": " + currentTicket.hint;
+  el("insp-hint-text").hidden = false;
+}
+
+// Hide the hint, and only offer the Hint button while you have a job.
+function hideHint() {
+  el("insp-hint-text").hidden = true;
+  el("insp-hint").hidden = !currentTicket;
 }
 
 // The Static IP box can only be typed in when "Static" is chosen.
@@ -135,6 +150,7 @@ function applyAndRetest() {
   // point back on), so check the job whichever device you changed.
   const closedTicket = checkTicketFixed(devices);
   showPings(device, closedTicket);
+  if (closedTicket) hideHint();  // the job's done, so no more hint button
 }
 
 function closeInspect() {
@@ -146,6 +162,7 @@ function closeInspect() {
 // Wire up the buttons and the IP mode dropdown.
 el("insp-ip-mode").addEventListener("change", updateIpBox);
 el("insp-cancel").addEventListener("click", closeInspect);
+el("insp-hint").addEventListener("click", showHint);
 // The form is "submitted" by the Save button or by pressing Enter in a box.
 el("inspect-panel").addEventListener("submit", (event) => {
   event.preventDefault();  // stop the browser reloading the page

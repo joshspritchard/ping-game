@@ -17,15 +17,23 @@ const KEY_BINDINGS = {
   right:    ["ArrowRight", "KeyD"],
   interact: ["KeyE"],
   close:    ["Escape", "Enter"],
+  cancel:   ["Escape"],
 };
+
+// Is the player typing in a box (e.g. on the config screen)?
+function isTyping(event) {
+  const tag = event.target.tagName;
+  return tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA";
+}
 
 window.addEventListener("keydown", (event) => {
   held[event.code] = true;
   // When you hold a key, the browser sends keydown again and again
   // ("repeat"). Only count the first one as a press.
   if (!event.repeat) pressed[event.code] = true;
-  // Stop arrow keys from scrolling the page while you play.
-  if (event.code.startsWith("Arrow")) event.preventDefault();
+  // Stop arrow keys from scrolling the page while you play,
+  // but let them move the cursor when typing in a box.
+  if (event.code.startsWith("Arrow") && !isTyping(event)) event.preventDefault();
 });
 
 window.addEventListener("keyup", (event) => {
@@ -41,6 +49,11 @@ window.addEventListener("blur", () => {
 // Is an action ("up", "down", "left", "right") being held?
 function isDown(action) {
   return KEY_BINDINGS[action].some((code) => held[code]);
+}
+
+// Forget every key tap that hasn't been used yet.
+function clearPresses() {
+  for (const code in pressed) pressed[code] = false;
 }
 
 // Was an action's key tapped since we last asked? Asking "uses up" the

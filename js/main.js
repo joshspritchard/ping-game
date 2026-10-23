@@ -60,12 +60,15 @@ function gameLoop(time) {
   const dt = Math.min((time - lastTime) / 1000, 0.1);
   lastTime = time;
 
-  // While the job sheet is open, the game waits: the player can't move,
-  // and E, Enter or Esc closes the sheet.
+  // While a pop-up is open, the game waits: the player can't move.
+  // The job sheet closes with E, Enter or Esc. The config screen closes
+  // with Esc (Enter saves it, which inspect.js handles).
   let nearbyDevice = null;
   let prompt = null;
   if (isJobSheetOpen()) {
     if (wasPressed("interact") || wasPressed("close")) hideJobSheet();
+  } else if (isInspectOpen()) {
+    if (wasPressed("cancel")) closeInspect();
   } else {
     updatePlayer(currentMap, dt);   // 1. update: move the player...
     checkDoors();                   //    ...and go through a door if on one
@@ -81,9 +84,7 @@ function gameLoop(time) {
         x: nearbyDevice.x, y: nearbyDevice.y,
         lines: ["E · Inspect " + nearbyDevice.name, nearbyDevice.owner + " · " + connects],
       };
-      // For now inspecting just prints the device in the console (F12);
-      // the inspect panel comes in Issue 9.
-      if (pressedE) console.log("Inspecting " + nearbyDevice.name, nearbyDevice);
+      if (pressedE) openInspect(nearbyDevice);
     } else if (nearbyPrinter) {
       prompt = {
         x: nearbyPrinter.x, y: nearbyPrinter.y,
